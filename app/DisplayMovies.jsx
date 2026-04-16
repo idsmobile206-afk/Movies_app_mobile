@@ -1,53 +1,51 @@
 import React from 'react';
-import { Image, Text, View, ScrollView, TextInput } from 'react-native';
-import moviesData from './movies';
+import { Image, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
+import moviesData from './movies.js' ; // Ensure path is correct
 
 const DisplayMovies = () => {
+  const router = useRouter();
   const genres = ['Fantasy', 'Action', 'Adventure', 'Comedy', 'Crime', 'Drama', 'Thriller'];
 
   return (
-    <View className="flex-1 pt-20 pl-2 bg-black">
-      {/* Search Input */}
-      <View className="px-3 mb-6">
+    <View className="flex-1 pt-12 bg-black">
+      <View className="px-4 mb-4">
+        <Text className="text-white text-3xl font-bold mb-4">Discover</Text>
         <TextInput
-          className="h-10 border border-red-700 rounded-full text-gray-400 px-5 py-2"
-          placeholder="Search"
+          className="h-12 bg-zinc-900 border border-zinc-800 rounded-xl text-white px-5"
+          placeholder="Search movies..."
           placeholderTextColor="gray"
         />
       </View>
 
-      {/* Genres - Scrollable for better UX */}
-      <View className="mb-8">
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View className="mb-6 h-10">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="pl-4">
           {genres.map((genre, i) => (
-            <View key={i} className="bg-red-700 px-6 py-2 rounded-full mx-2">
-              <Text className="text-white font-bold">{genre}</Text>
-            </View>
+            <Pressable key={i} className="bg-red-700 px-5 py-2 rounded-full mr-3 h-10 justify-center">
+              <Text className="text-white font-semibold">{genre}</Text>
+            </Pressable>
           ))}
         </ScrollView>
       </View>
 
-      {/* Movies List */}
-      <ScrollView>
-        <View className="flex-row flex-wrap justify-around">
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }}>
+        <View className="flex-row flex-wrap justify-between">
           {moviesData.map((movie, index) => (
-            <View 
+            <Pressable 
               key={index} 
-              className="border border-red-700 p-2 mb-4 w-[45%] items-center rounded-lg"
+              onPress={() => router.push({ pathname: '/MovieDetails', params: movie })}
+              className="mb-6 w-[48%]"
             >
               <Image 
                 source={{ uri: movie.bgImg }} 
-                className="w-full h-48 rounded-md"
+                className="w-full h-64 rounded-xl"
                 resizeMode="cover"
               />
-              <View className="mt-2 items-start w-full">
-                <Text className="text-red-600 font-bold text-lg" numberOfLines={1}>
-                  {movie.title}
-                </Text>
-                <Text className="text-red-500 text-xs">{movie.year}</Text>
-                <Text className="text-red-500 text-xs">{movie.date}</Text>
-              </View>
-            </View>
+              <Text className="text-white font-bold mt-2 text-md" numberOfLines={1}>
+                {movie.title}
+              </Text>
+              <Text className="text-zinc-500 text-xs">{movie.year} • {movie.genre}</Text>
+            </Pressable>
           ))}
         </View>
       </ScrollView>
